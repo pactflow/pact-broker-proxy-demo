@@ -1,0 +1,20 @@
+version: "3"
+services:
+  proxy:
+    image: ubuntu/squid
+    ports:
+      - "8080:3128"
+    volumes:
+      - ./squid.conf:/etc/squid/squid.conf
+      - ./passwords:/etc/squid/passwords
+    restart: always
+
+  pact-broker:
+    image: pactfoundation/pact-broker
+    ports:
+      - "9292:9292"
+    environment:
+      PACT_BROKER_PORT: '9292'
+      PACT_BROKER_DATABASE_URL: "sqlite:///pact_broker.sqlite3"
+      PACT_BROKER_LOG_LEVEL: INFO
+      PACT_BROKER_BASE_URL: 'https://localhost http://localhost http://localhost:9292 http://pact-broker:9292 https://host.docker.internal http://host.docker.internal http://host.docker.internal:9292'
